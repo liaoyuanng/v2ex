@@ -14,12 +14,11 @@ class SSTodayTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tableView.register(SSTodayTableViewCell.self, forCellReuseIdentifier: todayListCellID)
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        tableView.register(SSTodayTableViewCell.self, forCellReuseIdentifier: todayListCellID)
+        tableView.separatorStyle = .none
+        tableView.rowHeight = 200
+        
+        let _ = SSTodayDataSource.init()
     }
 
     override func didReceiveMemoryWarning() {
@@ -30,24 +29,23 @@ class SSTodayTableViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+        return 10
     }
 
-    /*
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
+        let cell = tableView.dequeueReusableCell(withIdentifier: todayListCellID, for: indexPath)
         return cell
     }
-    */
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView .deselectRow(at: indexPath, animated: true)
+    }
+ 
 
     /*
     // Override to support conditional editing of the table view.
