@@ -12,7 +12,15 @@ class SSBaseNavigationController: UINavigationController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        navigationBar.isTranslucent = false
+        
+        // remove navigation bar 1px bottom line
+        UINavigationBar.appearance().shadowImage = UIImage()
+        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
+        
+        navigationBar.layer.cornerRadius = 2
+        navigationBar.layer.shadowOpacity = 0.8
+        
         // Do any additional setup after loading the view.
     }
 

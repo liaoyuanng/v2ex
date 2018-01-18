@@ -9,16 +9,27 @@
 let todayListCellID = "_todaylist_cell"
 
 import UIKit
+import SwiftyJSON
 
 class SSTodayTableViewController: UITableViewController {
 
+    var dataSource = JSON.null
+    let dataHandler = SSTodayDataSource.init()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.title = "Top 10"
+        
         tableView.register(SSTodayTableViewCell.self, forCellReuseIdentifier: todayListCellID)
         tableView.separatorStyle = .none
-        tableView.rowHeight = 200
+        tableView.separatorColor = .clear
+        tableView.rowHeight = 150
+        tableView.showsVerticalScrollIndicator = false
         
-        let _ = SSTodayDataSource.init()
+        dataHandler.request(SSAPI.hot) { (json) in
+            self.dataSource = json
+            self.tableView.reloadData()
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -33,12 +44,14 @@ class SSTodayTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return dataSource.count
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: todayListCellID, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: todayListCellID, for: indexPath) as! SSTodayTableViewCell
+        cell.bindModel(TodayModel.init(dataSource[indexPath.row]))
+        cell.selectionStyle = .none
         return cell
     }
     

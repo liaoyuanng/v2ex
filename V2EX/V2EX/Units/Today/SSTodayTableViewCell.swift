@@ -8,31 +8,62 @@
 
 import UIKit
 import SnapKit
+import SwiftyJSON
+import Kingfisher
+
+let PADDING: CGFloat = 10
 
 class SSTodayTableViewCell: UITableViewCell {
+    
+    lazy var shadowLayer: CALayer = {
+        let layer = CALayer()
+        layer.frame = CGRect.init(x: 15, y: 15, width: ScreenWidth - 30, height: self.bounds.height)
+        layer.backgroundColor = UIColor.white.cgColor
+        layer.shadowOpacity = 0.8
+        layer.shadowRadius = 6
+        layer.shadowColor = SSRGBA(0, 0, 0, 0.5).cgColor
+        layer.shadowOffset = CGSize.init(width: 0, height: 0)
+        
+        return layer
+    }()
     
     lazy var backView: UIView = {
         let backView = UIView()
         backView.backgroundColor = .white
+        backView.layer.cornerRadius = 6
+        backView.layer.masksToBounds = true
+
         return backView
+    }()
+    
+    lazy var contentBackView: UIView = {
+        let contentBackView = UIView()
+        contentBackView.backgroundColor = SSRGB(245, 245, 245)
+        
+        return contentBackView
     }()
     
     lazy var avator: UIImageView = {
         let avator = UIImageView()
+        avator.layer.cornerRadius = 20
+        avator.layer.masksToBounds = true
+        
         return avator;
     }()
     
     lazy var nameLabel: UILabel = {
         let nameLabel = UILabel()
-        nameLabel.font = UIFont.systemFont(ofSize: 15);
+        nameLabel.font = UIFont.systemFont(ofSize: 12);
         nameLabel.textColor = .black
+        
         return nameLabel
     }()
     
     lazy var timeLable: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 15)
-        label.textColor = .black
+        label.font = UIFont.systemFont(ofSize: 10)
+        label.textColor = SSRGBA(0, 0, 0, 0.7)
+        
         return label
     }()
     
@@ -40,13 +71,17 @@ class SSTodayTableViewCell: UITableViewCell {
         let titlelabel = UILabel()
         titlelabel.font = UIFont.systemFont(ofSize: 15)
         titlelabel.textColor = .black
+        
         return titlelabel
     }()
     
     lazy var summary: UILabel = {
         let summary = UILabel()
-        summary.font = UIFont.systemFont(ofSize: 15)
-        summary.textColor = .black
+        summary.font = UIFont.systemFont(ofSize: 12)
+        summary.textColor = SSRGBA(0, 0, 0, 0.7)
+        summary.lineBreakMode = .byTruncatingTail
+        summary.numberOfLines = 0
+        
         return summary
     }()
     
@@ -57,6 +92,7 @@ class SSTodayTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier);
+        self.backgroundColor = .white
         initUI()
     }
     
@@ -65,58 +101,65 @@ class SSTodayTableViewCell: UITableViewCell {
     }
     
     func initUI() {
+        self.layer.addSublayer(shadowLayer)
         self.addSubview(backView)
-        self.addSubview(avator)
-        self.addSubview(nameLabel)
-        self.addSubview(timeLable)
-        self.addSubview(titleLabel)
-        self.addSubview(summary)
-        
-        backView.backgroundColor = .gray
-        avator.backgroundColor = .red
-        nameLabel.backgroundColor = .green
-        timeLable.backgroundColor = .blue
-        titleLabel.backgroundColor = .orange
-        summary.backgroundColor = .yellow
+        backView.addSubview(contentBackView)
+        backView.addSubview(avator)
+        backView.addSubview(nameLabel)
+        backView.addSubview(timeLable)
+        backView.addSubview(titleLabel)
+        backView.addSubview(summary)
     }
     
     override func layoutSubviews() {
         
         backView.snp.makeConstraints { (make) in
-            make.left.right.bottom.equalTo(self)
-            make.top.equalTo(self).offset(40)
+            make.edges.equalTo(self).inset(PADDING)
+        }
+        
+        contentBackView.snp.makeConstraints { (make) in
+            make.left.right.bottom.equalTo(backView)
+            make.top.equalTo(backView).offset(35)
         }
         
         avator.snp.makeConstraints { (make) in
-            make.top.equalTo(10)
-            make.left.equalTo(20)
-            make.size.equalTo(CGSize.init(width: 60, height: 60))
+            make.bottom.equalTo(contentBackView.snp.top).offset(20)
+            make.left.equalTo(backView).offset(PADDING)
+            make.size.equalTo(CGSize.init(width: 40, height: 40))
         }
         
         nameLabel.snp.makeConstraints { (make) in
             make.left.equalTo(avator.snp.right).offset(10)
-            make.bottom.equalTo(backView.snp.top);
-            make.right.equalTo(self).offset(-10)
+            make.bottom.equalTo(contentBackView.snp.top);
+            make.right.equalTo(backView).offset(-10)
             make.height.equalTo(20)
         }
         
         timeLable.snp.makeConstraints { (make) in
             make.left.right.height.equalTo(nameLabel)
-            make.top.equalTo(backView)
+            make.top.equalTo(contentBackView)
         }
         
         titleLabel.snp.makeConstraints { (make) in
-            make.left.equalTo(self).offset(10)
-            make.right.equalTo(self).offset(-10)
-            make.height.equalTo(30)
-            make.top.equalTo(avator.snp.bottom).offset(10)
+            make.left.equalTo(backView).offset(10)
+            make.right.equalTo(backView).offset(-10)
+            make.height.equalTo(20)
+            make.top.equalTo(avator.snp.bottom).offset(5)
         }
         
         summary.snp.makeConstraints { (make) in
             make.left.right.equalTo(titleLabel)
-            make.top.equalTo(titleLabel.snp.bottom).offset(10)
-            make.bottom.equalTo(self).offset(-10)
+            make.top.equalTo(titleLabel.snp.bottom)
+            make.bottom.equalTo(backView)
         }
+    }
+    
+    func bindModel(_ model: TodayModel) {
+        titleLabel.text = model.title
+        summary.text = model.content
+        nameLabel.text = model.member?.username
+        timeLable.text = model.created?.toDate()
+        avator.kf.setImage(with: (URL.init(string: "https:"+(model.member?.avatar_large)!)))
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

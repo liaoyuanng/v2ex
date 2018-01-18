@@ -12,8 +12,16 @@ class SSTabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        defaultConfig()
         configSubViewControllers()
-        // Do any additional setup after loading the view.
+    }
+    
+    func defaultConfig() {
+        tabBar.isTranslucent = false
+        
+        // remove tab bar 1px top line
+        UITabBar.appearance().shadowImage = UIImage()
+        UITabBar.appearance().backgroundImage = UIImage()
     }
 
     func configSubViewControllers() {
