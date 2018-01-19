@@ -17,7 +17,7 @@ class SSTodayTableViewCell: UITableViewCell {
     
     lazy var shadowLayer: CALayer = {
         let layer = CALayer()
-        layer.frame = CGRect.init(x: 15, y: 15, width: ScreenWidth - 30, height: self.bounds.height)
+        layer.frame = CGRect.init(x: 15, y: 15, width: ScreenWidth - 30, height: 120)
         layer.backgroundColor = UIColor.white.cgColor
         layer.shadowOpacity = 0.8
         layer.shadowRadius = 6
@@ -85,6 +85,21 @@ class SSTodayTableViewCell: UITableViewCell {
         return summary
     }()
     
+    lazy var replies: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 10)
+        label.textColor = SSRGBA(0, 0, 0, 0.7)
+        
+        return label
+    }()
+    
+    lazy var line: UIView = {
+        let line = UIView()
+        line.backgroundColor = SSRGBA(0, 0, 0, 0.7)
+        
+        return line
+    }()
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -109,6 +124,9 @@ class SSTodayTableViewCell: UITableViewCell {
         backView.addSubview(timeLable)
         backView.addSubview(titleLabel)
         backView.addSubview(summary)
+        backView.addSubview(replies)
+        backView.addSubview(line)
+//        backView.addSubview(touches)
     }
     
     override func layoutSubviews() {
@@ -136,8 +154,20 @@ class SSTodayTableViewCell: UITableViewCell {
         }
         
         timeLable.snp.makeConstraints { (make) in
-            make.left.right.height.equalTo(nameLabel)
+            make.left.height.equalTo(nameLabel)
             make.top.equalTo(contentBackView)
+        }
+        
+        line.snp.makeConstraints { (make) in
+            make.left.equalTo(timeLable.snp.right).offset(2)
+            make.size.equalTo(CGSize.init(width: 0.5, height: 10))
+            make.centerY.equalTo(timeLable)
+        }
+        
+        replies.snp.makeConstraints { (make) in
+            make.left.equalTo(line.snp.right).offset(2)
+            make.centerY.equalTo(timeLable)
+            make.height.equalTo(15)
         }
         
         titleLabel.snp.makeConstraints { (make) in
@@ -159,6 +189,7 @@ class SSTodayTableViewCell: UITableViewCell {
         summary.text = model.content
         nameLabel.text = model.member?.username
         timeLable.text = model.created?.toDate()
+        replies.text = "\(model.replies ?? 0)" + " 评论"
         avator.kf.setImage(with: (URL.init(string: "https:"+(model.member?.avatar_large)!)))
     }
 

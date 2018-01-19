@@ -8,11 +8,20 @@
 
 import UIKit
 
+let cellID = "community_cellid"
+
 class SSCommunityViewController: SSBaseViewController {
+    
+    lazy var tableView: UITableView = {
+        let tableView = UITableView.init(frame: self.view.bounds, style: .plain)
+        
+        
+        return tableView
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        view.backgroundColor = SSRGB(226, 226, 226)
         // Do any additional setup after loading the view.
     }
 

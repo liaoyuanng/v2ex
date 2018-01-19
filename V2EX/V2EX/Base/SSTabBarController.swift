@@ -25,7 +25,7 @@ class SSTabBarController: UITabBarController {
     }
 
     func configSubViewControllers() {
-        let titles = ["今日热议","搜索","我的"]
+        let titles = ["今日热议","社区","我的"]
         let images_n = ["tabbar_home_n","tabbar_home_n","tabbar_home_n"]
         let images_s = ["tabbar_home_s","tabbar_home_s","tabbar_home_s"]
         let vcNames = ["SSTodayTableViewController","SSCommunityViewController","SSMineViewController"];
