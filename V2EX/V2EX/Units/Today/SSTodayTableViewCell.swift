@@ -53,15 +53,15 @@ class SSTodayTableViewCell: UITableViewCell {
     
     lazy var nameLabel: UILabel = {
         let nameLabel = UILabel()
-        nameLabel.font = UIFont.systemFont(ofSize: 12);
+        nameLabel.font = FontSize(12)
         nameLabel.textColor = .black
         
         return nameLabel
     }()
     
-    lazy var timeLable: UILabel = {
+    lazy var timeLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 10)
+        label.font = FontSize(10)
         label.textColor = SSRGBA(0, 0, 0, 0.7)
         
         return label
@@ -69,7 +69,7 @@ class SSTodayTableViewCell: UITableViewCell {
     
     lazy var titleLabel: UILabel = {
         let titlelabel = UILabel()
-        titlelabel.font = UIFont.systemFont(ofSize: 15)
+        titlelabel.font = FontSize(15)
         titlelabel.textColor = .black
         
         return titlelabel
@@ -77,7 +77,7 @@ class SSTodayTableViewCell: UITableViewCell {
     
     lazy var summary: UILabel = {
         let summary = UILabel()
-        summary.font = UIFont.systemFont(ofSize: 12)
+        summary.font = FontSize(12)
         summary.textColor = SSRGBA(0, 0, 0, 0.7)
         summary.lineBreakMode = .byTruncatingTail
         summary.numberOfLines = 0
@@ -87,7 +87,7 @@ class SSTodayTableViewCell: UITableViewCell {
     
     lazy var replies: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 10)
+        label.font = FontSize(10)
         label.textColor = SSRGBA(0, 0, 0, 0.7)
         
         return label
@@ -121,7 +121,7 @@ class SSTodayTableViewCell: UITableViewCell {
         backView.addSubview(contentBackView)
         backView.addSubview(avator)
         backView.addSubview(nameLabel)
-        backView.addSubview(timeLable)
+        backView.addSubview(timeLabel)
         backView.addSubview(titleLabel)
         backView.addSubview(summary)
         backView.addSubview(replies)
@@ -130,6 +130,8 @@ class SSTodayTableViewCell: UITableViewCell {
     }
     
     override func layoutSubviews() {
+        
+        super.layoutSubviews()
         
         backView.snp.makeConstraints { (make) in
             make.edges.equalTo(self).inset(PADDING)
@@ -153,20 +155,20 @@ class SSTodayTableViewCell: UITableViewCell {
             make.height.equalTo(20)
         }
         
-        timeLable.snp.makeConstraints { (make) in
+        timeLabel.snp.makeConstraints { (make) in
             make.left.height.equalTo(nameLabel)
             make.top.equalTo(contentBackView)
         }
         
         line.snp.makeConstraints { (make) in
-            make.left.equalTo(timeLable.snp.right).offset(2)
+            make.left.equalTo(timeLabel.snp.right).offset(2)
             make.size.equalTo(CGSize.init(width: 0.5, height: 10))
-            make.centerY.equalTo(timeLable)
+            make.centerY.equalTo(timeLabel)
         }
         
         replies.snp.makeConstraints { (make) in
             make.left.equalTo(line.snp.right).offset(2)
-            make.centerY.equalTo(timeLable)
+            make.centerY.equalTo(timeLabel)
             make.height.equalTo(15)
         }
         
@@ -184,11 +186,11 @@ class SSTodayTableViewCell: UITableViewCell {
         }
     }
     
-    func bindModel(_ model: TodayModel) {
+    func bindModel(_ model: PostListModel) {
         titleLabel.text = model.title
         summary.text = model.content
         nameLabel.text = model.member?.username
-        timeLable.text = model.created?.toDate()
+        timeLabel.text = model.created?.toDate()
         replies.text = "\(model.replies ?? 0)" + " 评论"
         avator.kf.setImage(with: (URL.init(string: "https:"+(model.member?.avatar_large)!)))
     }

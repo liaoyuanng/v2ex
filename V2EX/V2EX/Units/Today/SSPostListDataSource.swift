@@ -1,5 +1,5 @@
 //
-//  SSTodayDataSource.swift
+//  SSPostListDataSource.swift
 //  V2EX
 //
 //  Created by Ju Liaoyuan on 2018/1/17.
@@ -10,7 +10,7 @@ import UIKit
 import SwiftyJSON
 import Alamofire
 
-struct TodayModel {
+struct PostListModel {
     var id: Int?
     var title: String?
     var url: String?
@@ -80,7 +80,7 @@ struct NodeModel {
     }
 }
 
-class SSTodayDataSource: NSObject {
+class SSPostListDataSource: NSObject {
     
     func request(_ urlString: String, completionHandler: @escaping (JSON) -> Void) {
         Alamofire.request(urlString).responseJSON { (response) in
