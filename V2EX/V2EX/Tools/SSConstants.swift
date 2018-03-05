@@ -16,6 +16,8 @@ let ScreenHeight = UIScreen.main.bounds.size.height
 let lightGray = UIColor.init(red: 199.0 / 255.0, green: 199.0 / 255.0, blue: 204.0 / 255.0, alpha: 1)
 let Gray = UIColor.init(red: 68.0 / 255.0, green: 71.0 / 255.0, blue: 72.0 / 255.0, alpha: 1)
 
+
+
 enum SSAPI {
     static let hot = baseURL + "/api/topics/hot.json"
     static let latest = baseURL + "/api/topics/latest.json"

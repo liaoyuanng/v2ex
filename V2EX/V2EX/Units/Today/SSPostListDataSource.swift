@@ -10,7 +10,7 @@ import UIKit
 import SwiftyJSON
 import Alamofire
 
-struct PostListModel {
+class PostListModel: NSObject {
     var id: Int?
     var title: String?
     var url: String?
@@ -22,8 +22,13 @@ struct PostListModel {
     var created: Int?
     var last_modified: Int?
     var last_touched: Int?
+    var height: CGFloat?
+    
     
     init(_ json: JSON) {
+        
+        super.init()
+        
         id = json["id"].int
         title = json["title"].string
         url = json["url"].string
@@ -35,6 +40,19 @@ struct PostListModel {
         last_touched = json["last_touched"].int
         member = MemberModel.init(json["member"])
         node = NodeModel.init(json["node"])
+        
+        calculateTextSize()
+    }
+    
+    func calculateTextSize() {
+        
+        let calculateQueue = DispatchQueue.init(label: "com.v2ex.calculateHeight")
+        calculateQueue.async {
+            let titleString = self.title! as NSString
+            let titleHeight = titleString.boundingRect(with: CGSize.init(width: ScreenWidth - 40, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 15)], context: nil).height
+            let contentHeight = self.content?.count == 0 ? 0.0 : 20.0;
+            self.height = titleHeight + CGFloat(contentHeight) + 60.0 + 30.0
+        }
     }
 }
 
@@ -82,13 +100,18 @@ struct NodeModel {
 
 class SSPostListDataSource: NSObject {
     
-    func request(_ urlString: String, completionHandler: @escaping (JSON) -> Void) {
+    func request(_ urlString: String, completionHandler: @escaping (Array<PostListModel>) -> Void) {
         Alamofire.request(urlString).responseJSON { (response) in
             guard response.result.isSuccess else {
                 return;
             }
             let json = JSON(response.result.value!)
-            completionHandler(json)
+            
+            var models = Array<PostListModel>.init()
+            for (_, subJson) in json {
+                models.append(PostListModel.init(subJson))
+            }
+            completionHandler(models)
         }
     }
 }

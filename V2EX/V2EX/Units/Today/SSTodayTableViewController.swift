@@ -12,8 +12,8 @@ import UIKit
 import SwiftyJSON
 
 class SSTodayTableViewController: UITableViewController {
-
-    var dataSource = JSON.null
+    
+    var dataSource = Array<PostListModel>.init()
     let dataHandler = SSPostListDataSource.init()
     
     override func viewDidLoad() {
@@ -23,13 +23,16 @@ class SSTodayTableViewController: UITableViewController {
         tableView.register(SSTodayTableViewCell.self, forCellReuseIdentifier: todayListCellID)
         tableView.separatorStyle = .none
         tableView.separatorColor = .clear
-        tableView.rowHeight = 150
         tableView.showsVerticalScrollIndicator = false
         
-        dataHandler.request(SSAPI.hot) { (json) in
-            self.dataSource = json
+        dataHandler.request(SSAPI.hot) { (datas) in
+            
+            self.dataSource = datas
             self.tableView.reloadData()
         }
+        
+        let fpsLabel = SSFPSLabel.init(frame: .zero)
+        UIApplication.shared.keyWindow?.addSubview(fpsLabel)
     }
 
     override func didReceiveMemoryWarning() {
@@ -50,9 +53,13 @@ class SSTodayTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: todayListCellID, for: indexPath) as! SSTodayTableViewCell
-        cell.bindModel(PostListModel.init(dataSource[indexPath.row]))
+        cell.bindModel(dataSource[indexPath.row])
         cell.selectionStyle = .none
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return dataSource[indexPath.row].height ?? 150.0
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

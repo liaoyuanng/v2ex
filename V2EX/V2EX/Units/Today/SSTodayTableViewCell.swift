@@ -17,12 +17,12 @@ class SSTodayTableViewCell: UITableViewCell {
     
     lazy var shadowLayer: CALayer = {
         let layer = CALayer()
-        layer.frame = CGRect.init(x: 15, y: 15, width: ScreenWidth - 30, height: 120)
+        layer.frame = CGRect.init(x: 15, y: 15, width: ScreenWidth - 30, height: self.frame.height)
         layer.backgroundColor = UIColor.white.cgColor
         layer.shadowOpacity = 0.8
         layer.shadowRadius = 6
         layer.shadowColor = SSRGBA(0, 0, 0, 0.5).cgColor
-        layer.shadowOffset = CGSize.init(width: 0, height: 0)
+        layer.shadowOffset = CGSize.init(width: 0, height: -1)
         
         return layer
     }()
@@ -71,6 +71,8 @@ class SSTodayTableViewCell: UITableViewCell {
         let titlelabel = UILabel()
         titlelabel.font = FontSize(15)
         titlelabel.textColor = .black
+        titlelabel.numberOfLines = 0
+        titlelabel.lineBreakMode = .byWordWrapping
         
         return titlelabel
     }()
@@ -80,7 +82,7 @@ class SSTodayTableViewCell: UITableViewCell {
         summary.font = FontSize(12)
         summary.textColor = SSRGBA(0, 0, 0, 0.7)
         summary.lineBreakMode = .byTruncatingTail
-        summary.numberOfLines = 0
+        summary.numberOfLines = 1
         
         return summary
     }()
@@ -175,18 +177,18 @@ class SSTodayTableViewCell: UITableViewCell {
         titleLabel.snp.makeConstraints { (make) in
             make.left.equalTo(backView).offset(10)
             make.right.equalTo(backView).offset(-10)
-            make.height.equalTo(20)
             make.top.equalTo(avator.snp.bottom).offset(5)
         }
         
         summary.snp.makeConstraints { (make) in
             make.left.right.equalTo(titleLabel)
             make.top.equalTo(titleLabel.snp.bottom)
-            make.bottom.equalTo(backView)
+            make.bottom.equalTo(backView).offset(-5)
         }
     }
     
     func bindModel(_ model: PostListModel) {
+        
         titleLabel.text = model.title
         summary.text = model.content
         nameLabel.text = model.member?.username

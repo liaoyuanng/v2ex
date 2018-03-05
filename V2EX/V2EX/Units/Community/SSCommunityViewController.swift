@@ -24,7 +24,7 @@ class SSCommunityViewController: SSBaseViewController, UITableViewDelegate, UITa
     }()
     
     let dataHandler = SSPostListDataSource.init()
-    var dataSource = JSON.null
+    var dataSource = Array<PostListModel>.init()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,11 +33,18 @@ class SSCommunityViewController: SSBaseViewController, UITableViewDelegate, UITa
         view.backgroundColor = .white
         self.view.addSubview(tableView)
         
-        dataHandler.request(SSAPI.latest) { (data) in
-            self.dataSource = try! data.merged(with: data).merged(with: data).merged(with: data).merged(with: data).merged(with: data)
+        dataHandler.request(SSAPI.latest) { (datas) in
+            self.dataSource = datas
             self.tableView.reloadData()
         }
-        // Do any additional setup after loading the view.
+        
+        tableView.addObserver(self, forKeyPath: "contentOffset", options: .new, context: nil)
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "contentOffset" {
+            print("111")
+        }
     }
     
 
@@ -47,7 +54,7 @@ class SSCommunityViewController: SSBaseViewController, UITableViewDelegate, UITa
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! SSCommunityTableViewCell
-        cell.bindModel(PostListModel.init(dataSource[indexPath.row]))
+        cell.bindModel(dataSource[indexPath.row])
         return cell
     }
     
